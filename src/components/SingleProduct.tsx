@@ -2,10 +2,11 @@
 
 import { StarIcon } from '@heroicons/react/20/solid'
 import axios from 'axios'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import type { Product } from './ProductsList'
-import { ContextAddInCart } from '../App'
+import { useDispatch } from 'react-redux'
+import { addProduct } from '../redux/cart/cartSlice'
 
 const reviews = { href: '#', average: 4, totalCount: 117 };
 const colors = [
@@ -37,7 +38,8 @@ function classNames(...classes: string[]) {
 }
 
 export default function SingleProduct() {
-    const changeInCart = useContext(ContextAddInCart);
+    const dispatch = useDispatch();
+
     const [product, setProduct] = useState<Product| null>(null)
     const {id} = useParams()
     useEffect(() => {
@@ -196,7 +198,7 @@ export default function SingleProduct() {
 
               <button
                 type='button'
-                onClick={() => changeInCart && changeInCart(product)}
+                onClick={() => dispatch(addProduct(product))}
                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Add to bag

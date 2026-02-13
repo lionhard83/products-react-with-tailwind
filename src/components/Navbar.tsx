@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useContext, useEffect, useState } from 'react'
+import { Fragment,useState } from 'react'
 import {
   Dialog,
   DialogBackdrop,
@@ -16,9 +16,10 @@ import {
   TabPanels,
 } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ContextCart } from '../App'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import type { RootState } from '../redux/store'
+import { toggleDrawer } from '../redux/cart/cartSlice'
 
 const navigation = {
   categories: [
@@ -28,7 +29,7 @@ const navigation = {
       featured: [
         {
           name: 'New Arrivals',
-          href: '#',
+          href: '/products',
           imageSrc: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/mega-menu-category-01.jpg',
           imageAlt: 'Models sitting back to back, wearing Basic Tee in black and bone.',
         },
@@ -41,120 +42,113 @@ const navigation = {
       ],
       sections: [
         {
-          id: 'clothing',
-          name: 'Clothing',
+          id: 'clothes',
+          name: 'clothes',
           items: [
-            { name: 'Tops', href: '#' },
+            { name: 'Clothes', href: '/products/categories/1' },
             { name: 'Dresses', href: '#' },
-            { name: 'Pants', href: '#' },
-            { name: 'Denim', href: '#' },
-            { name: 'Sweaters', href: '#' },
-            { name: 'T-Shirts', href: '#' },
-            { name: 'Jackets', href: '#' },
-            { name: 'Activewear', href: '#' },
-            { name: 'Browse All', href: '#' },
+            
           ],
         },
-        {
-          id: 'accessories',
-          name: 'Accessories',
-          items: [
-            { name: 'Watches', href: '#' },
-            { name: 'Wallets', href: '#' },
-            { name: 'Bags', href: '#' },
-            { name: 'Sunglasses', href: '#' },
-            { name: 'Hats', href: '#' },
-            { name: 'Belts', href: '#' },
-          ],
-        },
-        {
-          id: 'brands',
-          name: 'Brands',
-          items: [
-            { name: 'Full Nelson', href: '#' },
-            { name: 'My Way', href: '#' },
-            { name: 'Re-Arranged', href: '#' },
-            { name: 'Counterfeit', href: '#' },
-            { name: 'Significant Other', href: '#' },
-          ],
-        },
+        // {
+        //   id: 'accessories',
+        //   name: 'Accessories',
+        //   items: [
+        //     { name: 'Eletronics', href: '/productus/clothes' },
+           
+        //   ],
+        // },
+        // {
+        //   id: 'brands',
+        //   name: 'Brands',
+        //   items: [
+        //     { name: 'Full Nelson', href: '#' },
+        //     { name: 'My Way', href: '#' },
+        //     { name: 'Re-Arranged', href: '#' },
+        //     { name: 'Counterfeit', href: '#' },
+        //     { name: 'Significant Other', href: '#' },
+        //   ],
+        // },
       ],
     },
-    {
-      id: 'men',
-      name: 'Men',
-      featured: [
-        {
-          name: 'New Arrivals',
-          href: '#',
-          imageSrc:
-            'https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg',
-          imageAlt: 'Drawstring top with elastic loop closure and textured interior padding.',
-        },
-        {
-          name: 'Artwork Tees',
-          href: '#',
-          imageSrc: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-06.jpg',
-          imageAlt:
-            'Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.',
-        },
-      ],
-      sections: [
-        {
-          id: 'clothing',
-          name: 'Clothing',
-          items: [
-            { name: 'Tops', href: '#' },
-            { name: 'Pants', href: '#' },
-            { name: 'Sweaters', href: '#' },
-            { name: 'T-Shirts', href: '#' },
-            { name: 'Jackets', href: '#' },
-            { name: 'Activewear', href: '#' },
-            { name: 'Browse All', href: '#' },
-          ],
-        },
-        {
-          id: 'accessories',
-          name: 'Accessories',
-          items: [
-            { name: 'Watches', href: '#' },
-            { name: 'Wallets', href: '#' },
-            { name: 'Bags', href: '#' },
-            { name: 'Sunglasses', href: '#' },
-            { name: 'Hats', href: '#' },
-            { name: 'Belts', href: '#' },
-          ],
-        },
-        {
-          id: 'brands',
-          name: 'Brands',
-          items: [
-            { name: 'Re-Arranged', href: '#' },
-            { name: 'Counterfeit', href: '#' },
-            { name: 'Full Nelson', href: '#' },
-            { name: 'My Way', href: '#' },
-          ],
-        },
-      ],
-    },
+    // {
+    //   id: 'men',
+    //   name: 'Men',
+    //   featured: [
+    //     {
+    //       name: 'New Arrivals',
+    //       href: '#',
+    //       imageSrc:
+    //         'https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg',
+    //       imageAlt: 'Drawstring top with elastic loop closure and textured interior padding.',
+    //     },
+    //     {
+    //       name: 'Artwork Tees',
+    //       href: '#',
+    //       imageSrc: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-06.jpg',
+    //       imageAlt:
+    //         'Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.',
+    //     },
+    //   ],
+    //   sections: [
+    //     {
+    //       id: 'clothing',
+    //       name: 'Clothing',
+    //       items: [
+    //         { name: 'Tops', href: '#' },
+    //         { name: 'Pants', href: '#' },
+    //         { name: 'Sweaters', href: '#' },
+    //         { name: 'T-Shirts', href: '#' },
+    //         { name: 'Jackets', href: '#' },
+    //         { name: 'Activewear', href: '#' },
+    //         { name: 'Browse All', href: '#' },
+    //       ],
+    //     },
+    //     {
+    //       id: 'accessories',
+    //       name: 'Accessories',
+    //       items: [
+    //         { name: 'Watches', href: '#' },
+    //         { name: 'Wallets', href: '#' },
+    //         { name: 'Bags', href: '#' },
+    //         { name: 'Sunglasses', href: '#' },
+    //         { name: 'Hats', href: '#' },
+    //         { name: 'Belts', href: '#' },
+    //       ],
+    //     },
+    //     {
+    //       id: 'brands',
+    //       name: 'Brands',
+    //       items: [
+    //         { name: 'Re-Arranged', href: '#' },
+    //         { name: 'Counterfeit', href: '#' },
+    //         { name: 'Full Nelson', href: '#' },
+    //         { name: 'My Way', href: '#' },
+    //       ],
+    //     },
+    //   ],
+    // },
   ],
   pages: [
     // { name: 'Products', href: '#' },
     { name: 'Products', href: '/products' },
   ],
 }
-type CategoryResponse = {name: string, id: string, slug: string, image: string};
+// type CategoryResponse = {name: string, id: string, slug: string, image: string};
 
-export default function Navbar(props: {openCart: (open: boolean) => void}) {
+export default function Navbar () {
   const [open, setOpen] = useState(false);
-  const products = useContext(ContextCart);
+  const products = useSelector((state: RootState) => state.cart.value);
+  const dispatch = useDispatch();
+  // const products = useContext(ContextCart);
 
-  const [categories, setCategories] = useState<CategoryResponse[]>([]);
 
-  useEffect(() => {
-        axios.get<CategoryResponse[]>('https://api.escuelajs.co/api/v1/categories')
-        .then(response => setCategories(response.data))
-  }, [])
+  // const [categories, setCategories] = useState<CategoryResponse[]>([]);
+
+  // useEffect(() => {
+  //       axios.get<CategoryResponse[]>('https://api.escuelajs.co/api/v1/categories')
+  //       .then(response => setCategories(response.data))
+  // }, [])
 
   return (
     <div className="bg-white">
@@ -206,10 +200,10 @@ export default function Navbar(props: {openCart: (open: boolean) => void}) {
                             src={item.imageSrc}
                             className="aspect-square w-full rounded-lg bg-gray-100 object-cover group-hover:opacity-75"
                           />
-                          <a href={item.href} className="mt-6 block font-medium text-gray-900">
+                          <Link to={item.href} className="mt-6 block font-medium text-gray-900">
                             <span aria-hidden="true" className="absolute inset-0 z-10" />
                             {item.name}
-                          </a>
+                          </Link>
                           <p aria-hidden="true" className="mt-1">
                             Shop now
                           </p>
@@ -228,9 +222,9 @@ export default function Navbar(props: {openCart: (open: boolean) => void}) {
                         >
                           {section.items.map((item) => (
                             <li key={item.name} className="flow-root">
-                              <a href={item.href} className="-m-2 block p-2 text-gray-500">
+                              <Link to={item.href} className="-m-2 block p-2 text-gray-500">
                                 {item.name}
-                              </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
@@ -241,15 +235,15 @@ export default function Navbar(props: {openCart: (open: boolean) => void}) {
               </TabPanels>
             </TabGroup>
 
-            <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-              {categories.map((category) => (
+            {/* <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+              {navigation.categories.map((category) => (
                 <div key={category.name} className="flow-root">
                   <Link to={'/products/categories/' + category.id} className="-m-2 block p-2 font-medium text-gray-900">
                     {category.name}
                   </Link>
                 </div>
               ))}
-            </div>
+            </div> */}
 
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
               <div className="flow-root">
@@ -340,10 +334,10 @@ export default function Navbar(props: {openCart: (open: boolean) => void}) {
                                       src={item.imageSrc}
                                       className="aspect-square w-full rounded-lg bg-gray-100 object-cover group-hover:opacity-75"
                                     />
-                                    <a href={item.href} className="mt-6 block font-medium text-gray-900">
+                                    <Link to={item.href} className="mt-6 block font-medium text-gray-900">
                                       <span aria-hidden="true" className="absolute inset-0 z-10" />
                                       {item.name}
-                                    </a>
+                                    </Link>
                                     <p aria-hidden="true" className="mt-1">
                                       Shop now
                                     </p>
@@ -363,9 +357,9 @@ export default function Navbar(props: {openCart: (open: boolean) => void}) {
                                     >
                                       {section.items.map((item) => (
                                         <li key={item.name} className="flex">
-                                          <a href={item.href} className="hover:text-gray-800">
+                                          <Link to={item.href} className="hover:text-gray-800">
                                             {item.name}
-                                          </a>
+                                          </Link>
                                         </li>
                                       ))}
                                     </ul>
@@ -378,7 +372,7 @@ export default function Navbar(props: {openCart: (open: boolean) => void}) {
                       </PopoverPanel>
                     </Popover>
                   ))}
-                  {categories.map((category) => (
+                  {/* {navigation.categories.map((category) => (
                     <Link
                       key={category.id}
                       to={'/products/categories/' + category.id}
@@ -386,7 +380,7 @@ export default function Navbar(props: {openCart: (open: boolean) => void}) {
                     >
                       {category.name}
                     </Link>
-                  ))}
+                  ))} */}
                 </div>
               </PopoverGroup>
 
@@ -423,14 +417,14 @@ export default function Navbar(props: {openCart: (open: boolean) => void}) {
 
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
-                  <a onClick={() => props.openCart(true)} href="#" className="group -m-2 flex items-center p-2">
+                  <Link onClick={() => dispatch(toggleDrawer())} to="#" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">{products.length}</span>
                     <span className="sr-only">items in cart, view bag</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

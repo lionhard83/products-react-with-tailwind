@@ -1,10 +1,12 @@
 'use client'
 
-import { useContext, type PropsWithChildren } from 'react'
+import { type PropsWithChildren } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
-import { ContextAddInCart, ContextCart } from '../App'
+import { useDispatch, useSelector } from 'react-redux'
+import type { RootState } from '../redux/store'
+import { removeProduct, toggleDrawer, setOpen } from '../redux/cart/cartSlice'
 
 // const products = [
 //   {
@@ -40,9 +42,12 @@ import { ContextAddInCart, ContextCart } from '../App'
 //   },
 // ]
 
-export const Cart = ({children, open, setOpen}: PropsWithChildren<{open: boolean, setOpen: (open: boolean) => void}>) => {
-    const changeInCart = useContext(ContextAddInCart);
-   const productsInCart = useContext(ContextCart)
+export const Cart = ({children}: PropsWithChildren) => {
+  const {value: productsInCart, isOpen} = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch();
+  const f = () => {
+    dispatch(setOpen(true));
+  }
 
   return (
     <div>
@@ -53,7 +58,7 @@ export const Cart = ({children, open, setOpen}: PropsWithChildren<{open: boolean
       >
         Open drawer
       </button> */}
-      <Dialog open={open} onClose={setOpen} className="relative z-10">
+      <Dialog open={isOpen} onClose={f} className="relative z-10">
         <DialogBackdrop
           transition
           className="fixed inset-0 bg-gray-500/75 transition-opacity duration-500 ease-in-out data-closed:opacity-0"
@@ -73,7 +78,7 @@ export const Cart = ({children, open, setOpen}: PropsWithChildren<{open: boolean
                       <div className="ml-3 flex h-7 items-center">
                         <button
                           type="button"
-                          onClick={() => setOpen(false)}
+                          onClick={() => dispatch(setOpen(false))}
                           className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
                         >
                           <span className="absolute -inset-0.5" />
@@ -106,7 +111,7 @@ export const Cart = ({children, open, setOpen}: PropsWithChildren<{open: boolean
                                   <p className="text-gray-500">Qty {product.quantity}</p>
 
                                   <div className="flex">
-                                    <button onClick={() => changeInCart && changeInCart(product, true)} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                    <button onClick={() => dispatch(removeProduct(product))} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
                                       Remove
                                     </button>
                                   </div>
@@ -138,7 +143,7 @@ export const Cart = ({children, open, setOpen}: PropsWithChildren<{open: boolean
                         or{' '}
                         <button
                           type="button"
-                          onClick={() => setOpen(false)}
+                          onClick={() => dispatch(setOpen(false))}
                           className="font-medium text-indigo-600 hover:text-indigo-500"
                         >
                           Continue Shopping
