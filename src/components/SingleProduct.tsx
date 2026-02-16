@@ -8,7 +8,7 @@ import type { Product } from './ProductsList'
 import { useDispatch } from 'react-redux'
 import { addProduct } from '../redux/cart/cartSlice'
 
-const reviews = { href: '#', average: 4, totalCount: 117 };
+
 const colors = [
     { id: 'white', name: 'White', classes: 'bg-white checked:outline-gray-400' },
     { id: 'gray', name: 'Gray', classes: 'bg-gray-200 checked:outline-gray-400' },
@@ -43,7 +43,7 @@ export default function SingleProduct() {
     const [product, setProduct] = useState<Product| null>(null)
     const {id} = useParams()
     useEffect(() => {
-        axios.get<Product>(`https://api.escuelajs.co/api/v1/products/${id}`)
+        axios.get<Product>(`https://dummyjson.com/products/${id}`)
         .then(response => setProduct(response.data));
     }, [id])
   return (
@@ -123,15 +123,15 @@ export default function SingleProduct() {
                       key={rating}
                       aria-hidden="true"
                       className={classNames(
-                        reviews.average > rating ? 'text-gray-900' : 'text-gray-200',
+                        product.reviews.reduce((acc, item, _, arr) => acc + (item.rating/arr.length), 0) > rating ? 'text-gray-900' : 'text-gray-200',
                         'size-5 shrink-0',
                       )}
                     />
                   ))}
                 </div>
-                <p className="sr-only">{reviews.average} out of 5 stars</p>
-                <a href={reviews.href} className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                  {reviews.totalCount} reviews
+                <p className="sr-only">{product.reviews.reduce((acc, item, _, arr) => acc + (item.rating/arr.length), 0)} out of 5 stars</p>
+                <a className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                  {product.reviews.length} reviews
                 </a>
               </div>
             </div>

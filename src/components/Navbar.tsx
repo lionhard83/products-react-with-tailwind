@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment,useState } from 'react'
+import { Fragment,useEffect,useState } from 'react'
 import {
   Dialog,
   DialogBackdrop,
@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '../redux/store'
 import { toggleDrawer } from '../redux/cart/cartSlice'
+import axios from 'axios'
 
 const navigation = {
   categories: [
@@ -134,7 +135,7 @@ const navigation = {
     { name: 'Products', href: '/products' },
   ],
 }
-// type CategoryResponse = {name: string, id: string, slug: string, image: string};
+type CategoryResponse = {name: string, url: string, slug: string};
 
 export default function Navbar () {
   const [open, setOpen] = useState(false);
@@ -143,12 +144,12 @@ export default function Navbar () {
   // const products = useContext(ContextCart);
 
 
-  // const [categories, setCategories] = useState<CategoryResponse[]>([]);
+  const [categories, setCategories] = useState<CategoryResponse[]>([]);
 
-  // useEffect(() => {
-  //       axios.get<CategoryResponse[]>('https://api.escuelajs.co/api/v1/categories')
-  //       .then(response => setCategories(response.data))
-  // }, [])
+  useEffect(() => {
+        axios.get<CategoryResponse[]>('https://dummyjson.com/products/categories')
+        .then(response => setCategories(response.data))
+  }, [])
 
   return (
     <div className="bg-white">
@@ -220,9 +221,9 @@ export default function Navbar () {
                           aria-labelledby={`${category.id}-${section.id}-heading-mobile`}
                           className="mt-6 flex flex-col space-y-6"
                         >
-                          {section.items.map((item) => (
-                            <li key={item.name} className="flow-root">
-                              <Link to={item.href} className="-m-2 block p-2 text-gray-500">
+                          {categories.map((item) => (
+                            <li key={item.name} className="flow-root" onClick={() => { setOpen(false); console.log("chiuditi sesamo!") }}>
+                              <Link onClick={() => setOpen(false)} to={'/products/categories/' + item.slug} className="-m-2 block p-2 text-gray-500">
                                 {item.name}
                               </Link>
                             </li>
@@ -355,9 +356,9 @@ export default function Navbar () {
                                       aria-labelledby={`${section.name}-heading`}
                                       className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
                                     >
-                                      {section.items.map((item) => (
-                                        <li key={item.name} className="flex">
-                                          <Link to={item.href} className="hover:text-gray-800">
+                                      {categories.map((item) => (
+                                        <li onClick={() => { setOpen(false); console.log("chiuditi sesamo!") }} key={item.name} className="flex">
+                                          <Link  to={'/products/categories/' + item.slug} className="hover:text-gray-800">
                                             {item.name}
                                           </Link>
                                         </li>

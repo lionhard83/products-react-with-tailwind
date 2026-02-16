@@ -5,8 +5,8 @@ import Navbar from "./components/Navbar";
 import SingleProduct from "./components/SingleProduct";
 import { Provider } from "react-redux";
 import {store} from "./redux/store";
-import { Example } from "./components/Example";
 import { Cart } from "./components/Cart";
+import { Checkout } from "./components/Checkout";
 
 
 
@@ -19,7 +19,7 @@ export const AppWithRedux = () => {
     path: "/",
     element: <Provider store={store}>
             <Navbar  />
-            <Example />
+            {/* <Example /> */}
             <Cart>
                 <Outlet />
             </Cart>
@@ -30,6 +30,7 @@ export const AppWithRedux = () => {
       { path: "/products", Component: ProductsList },
       { path: "/products/categories/:id", Component: ProductsList },
       { path: "/products/:id", Component: SingleProduct },
+      { path: "/checkout", Component: Checkout },
       
     ],
   },

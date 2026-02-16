@@ -30,11 +30,22 @@ export const cartSlice = createSlice({
     setOpen: (state, action: PayloadAction<boolean>) => {
       state.isOpen = action.payload;
     },
+    setQuantity: (
+      state,
+      action: PayloadAction<{ productId: number; quantity: number }>,
+    ) => {
+      state.value = state.value.map((item) => {
+        if (item.id === action.payload.productId) {
+          item.quantity = action.payload.quantity;
+        }
+        return item;
+      });
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addProduct, removeProduct, toggleDrawer, setOpen } =
+export const { addProduct, removeProduct, toggleDrawer, setOpen, setQuantity } =
   cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -3,26 +3,52 @@ import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom";
 
 
-type Category = {
-  id: number;
-  name: string;
-  slug: string;
-  image: string;
-  creationAt: string;   // ISO date string
-  updatedAt: string;    // ISO date string
-};
-
 export type Product = {
   id: number;
   title: string;
-  slug: string;
-  price: number;
   description: string;
-  category: Category;
+  category: string;
+  price: number;
+  discountPercentage: number;
+  rating: number;
+  stock: number;
+  tags: string[];
+  brand: string;
+  sku: string;
+  weight: number;
+  dimensions: {
+    width: number;
+    height: number;
+    depth: number;
+  };
+  warrantyInformation: string;
+  shippingInformation: string;
+  availabilityStatus: string;
+  reviews: Array<{
+    rating: number;
+    comment: string;
+    date: string; // ISO date string
+    reviewerName: string;
+    reviewerEmail: string;
+  }>;
+  returnPolicy: string;
+  minimumOrderQuantity: number;
+  meta: {
+    createdAt: string; // ISO date string
+    updatedAt: string; // ISO date string
+    barcode: string;
+    qrCode: string;
+  };
   images: string[];
-  creationAt: string;   // ISO date string
-  updatedAt: string;    // ISO date string (se esiste nel tuo JSON reale)
+  thumbnail: string;
 };
+
+export type ResponseType = {
+  products: Product[],
+  total: number,
+  skip: number,
+  limit: number
+}
 
 export default function ProductsList() {
     const [products, setProducts] = useState<Product[]>([])
@@ -31,9 +57,9 @@ export default function ProductsList() {
     
 
     useEffect(() => {
-        axios.get<Product[]>(`https://api.escuelajs.co/api/v1/categories/${id}/products`)
+        axios.get<ResponseType>(`https://dummyjson.com/products/category/${id}`)
         .then(response => {
-            setProducts(response.data);
+            setProducts(response.data.products);
         })
 
     }, [id])
